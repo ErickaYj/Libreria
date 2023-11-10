@@ -9,6 +9,7 @@ import com.libreria.baseDatos.ConexionBaseDatos;
 import com.libreria.baseDatos.entidades.Autor;
 import java.io.Serializable;
 import java.sql.Connection;
+import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -18,6 +19,48 @@ import javax.naming.NamingException;
 
 
 public class ServicioCRUDAutor {
+    
+    public static List<Autor> obtenerAutores() throws SQLException{
+        List<Autor> respuesta = null;
+        ConexionBaseDatos conexion = new ConexionBaseDatos();
+        Connection con;
+        PreparedStatement pstCons = null;
+        ResultSet rs = null;
+         try {
+            //Abro conexion a la base de datosss
+            con = conexion.obtenerConexion(null);
+            //Declaro la sentencia SQL
+            StringBuilder sb = new StringBuilder();
+            sb.append("SELECT * FROM  autor ");
+            // Preparo la instruccion
+            pstCons = con.prepareStatement(sb.toString());
+            // Ejecuto la instruccion
+            rs = pstCons.executeQuery();
+            // Con el resultado de la consulta, obtengo los datos de la Base
+            respuesta = new ArrayList<>();
+            while (rs.next()){
+                Autor autorBDD = new Autor();
+                autorBDD.setCodigoAutor(rs.getLong(1));
+                autorBDD.setNombreAutor(rs.getString(2));
+                autorBDD.setFechaNacimiento(rs.getDate(3));
+                autorBDD.setSexo(rs.getString(4));
+                autorBDD.setNacionalidad(rs.getString(5));
+                //Añado el objeto al listado de respuesta
+                respuesta.add(autorBDD);
+            }
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        } catch (NamingException e){
+            e.printStackTrace();
+        } catch (SQLException e){
+            e.printStackTrace();
+        } catch (Exception e){
+            e.printStackTrace();
+        } finally{
+            conexion.cerrarConexiones(rs, pstCons);
+        }
+        return respuesta;
+    }
     
     public static Autor obtenerAutorPorID(Long codigoAutorABuscar) throws SQLException{
         Autor respuesta = null;
@@ -81,12 +124,11 @@ public class ServicioCRUDAutor {
             con = conexion.obtenerConexion(null);
             //Declaro la sentencia SQL
             StringBuilder sb = new StringBuilder();
-            sb.append("INSERT INTO autor (autor_id, nombre , fecha_nacimiento, sexo, nacionalidad) ");
+            sb.append("INSERT INTO autor (nombre , fecha_nacimiento, sexo, nacionalidad) ");
             sb.append(" VALUES ( ");
-            sb.append("'"+ autorInsertar.getCodigoAutor() + ", ");
             sb.append("'" + autorInsertar.getNombreAutor()+ "', ");
-            sb.append("'" + autorInsertar.getFechaNacimiento()+ "' ");
-            sb.append("'" + autorInsertar.getSexo()+ "' ");
+            sb.append("'" + new Date(autorInsertar.getFechaNacimiento().getTime()) + "', ");
+            sb.append("'" + autorInsertar.getSexo()+ "', ");
             sb.append("'" + autorInsertar.getNacionalidad()+ "' ");
             
             sb.append(" ) ");
@@ -132,11 +174,11 @@ public class ServicioCRUDAutor {
             //Declaro la sentencia SQL
             StringBuilder sb = new StringBuilder();
             sb.append("UPDATE autor SET  ");
-            sb.append(" nombre = ' " + autorActualizar.getNombreAutor()+ "', " );
-            sb.append(" fecha_nacimiento = ' " + autorActualizar.getFechaNacimiento()+ "' " );
-            sb.append(" sexo  = " + autorActualizar.getSexo());
-            sb.append(" nacionalidad  = " + autorActualizar.getNacionalidad());
-            
+            sb.append(" nombre = '" + autorActualizar.getNombreAutor()+ "', " );
+            sb.append(" fecha_nacimiento = '" + new Date(autorActualizar.getFechaNacimiento().getTime())+ "', " );
+            sb.append(" sexo  = '" + autorActualizar.getSexo()+ "', ");
+            sb.append(" nacionalidad  = '" + autorActualizar.getNacionalidad()+ "' ");
+            sb.append(" where autor_id  = " + autorActualizar.getCodigoAutor());
             // Preparo la instruccion
             pstCons = con.prepareStatement(sb.toString());
             // Ejecuto la instruccion
