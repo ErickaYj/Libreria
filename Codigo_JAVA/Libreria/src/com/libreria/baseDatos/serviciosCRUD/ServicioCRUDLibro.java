@@ -6,17 +6,59 @@ package com.libreria.baseDatos.serviciosCRUD;
 
 import com.libreria.DTOS.LibrosAutoresDTO;
 import com.libreria.baseDatos.ConexionBaseDatos;
-import com.libreria.baseDatos.entidades.Autor;
 import com.libreria.baseDatos.entidades.Libro;
 import java.sql.Connection;
+import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 import javax.naming.NamingException;
 
 
 public class ServicioCRUDLibro {
+    public static List<Libro> obtenerLibros() throws SQLException{
+        List<Libro> respuesta = null;
+        ConexionBaseDatos conexion = new ConexionBaseDatos();
+        Connection con;
+        PreparedStatement pstCons = null;
+        ResultSet rs = null;
+         try {
+            //Abro conexion a la base de datosss
+            con = conexion.obtenerConexion(null);
+            //Declaro la sentencia SQL
+            StringBuilder sb = new StringBuilder();
+            sb.append("SELECT * FROM  libro ");
+            // Preparo la instruccion
+            pstCons = con.prepareStatement(sb.toString());
+            // Ejecuto la instruccion
+            rs = pstCons.executeQuery();
+            // Con el resultado de la consulta, obtengo los datos de la Base
+            respuesta = new ArrayList<>();
+            while (rs.next()){
+                Libro libroBDD = new Libro();
+                libroBDD.setCodigoLibro(rs.getLong(1));
+                libroBDD.setTitulo(rs.getString(2));
+                libroBDD.setFechaPublicacion(rs.getDate(3));
+                libroBDD.setEditorial(rs.getString(4));
+                libroBDD.setCodigoAutor(rs.getLong(5));
+                //Añado el objeto al listado de respuesta
+                respuesta.add(libroBDD);
+            }
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        } catch (NamingException e){
+            e.printStackTrace();
+        } catch (SQLException e){
+            e.printStackTrace();
+        } catch (Exception e){
+            e.printStackTrace();
+        } finally{
+            conexion.cerrarConexiones(rs, pstCons);
+        }
+        return respuesta;
+    }
     
     public static Libro obtenerLibroPorID(Long codigoLibroABuscar) throws SQLException{
         Libro respuesta= null;
@@ -29,8 +71,8 @@ public class ServicioCRUDLibro {
             con = conexion.obtenerConexion(null);
             //Declaro la sentencia SQL
             StringBuilder sb = new StringBuilder();
-            sb.append("SELECT * FROM  autor ");
-            sb.append(" WHERE autor_id = " + codigoLibroABuscar);
+            sb.append("SELECT * FROM  libro ");
+            sb.append(" WHERE idlibro = " + codigoLibroABuscar);
             // Preparo la instruccion
             pstCons = con.prepareStatement(sb.toString());
             // Ejecuto la instruccion
@@ -43,6 +85,7 @@ public class ServicioCRUDLibro {
                 libroBDD.setTitulo(rs.getString(2));
                 libroBDD.setFechaPublicacion(rs.getDate(3));
                 libroBDD.setEditorial(rs.getString(4));
+                libroBDD.setCodigoAutor(rs.getLong(5));
                 //Añado el objeto al listado de respuesta
                 respuesta = libroBDD;
                 
@@ -83,8 +126,9 @@ public class ServicioCRUDLibro {
             sb.append(" VALUES ( ");
             sb.append("'"+ libroInsertar.getCodigoLibro()+ ", ");
             sb.append("'" + libroInsertar.getTitulo()+ "', ");
-            sb.append("'" + libroInsertar.getFechaPublicacion()+ "' ");
+            sb.append("'" + new Date(libroInsertar.getFechaPublicacion().getTime())+"', ");
             sb.append("'" + libroInsertar.getEditorial()+ "' ");
+            sb.append("'"+libroInsertar.getCodigoAutor());
             
             sb.append(" ) ");
             // Preparo la instruccion
@@ -128,10 +172,11 @@ public class ServicioCRUDLibro {
             con = conexion.obtenerConexion(null);
             //Declaro la sentencia SQL
             StringBuilder sb = new StringBuilder();
-            sb.append("UPDATE autor SET  ");
-            sb.append(" nombre = ' " + libroActualizar.getTitulo()+ "', " );
-            sb.append(" fecha_nacimiento = ' " + libroActualizar.getFechaPublicacion()+ "' " );
-            sb.append(" sexo  = " + libroActualizar.getEditorial());
+            sb.append("UPDATE libro SET  ");
+            sb.append(" titulo = ' " + libroActualizar.getTitulo()+ "', " );
+            sb.append(" fecha_publicacion = ' " + libroActualizar.getFechaPublicacion()+ "' " );
+            sb.append(" editorial  = " + libroActualizar.getEditorial()+"', " );
+            sb.append("codigo_autor='"+libroActualizar.getCodigoAutor()+", ");
             
             // Preparo la instruccion
             pstCons = con.prepareStatement(sb.toString());
@@ -243,5 +288,62 @@ public class ServicioCRUDLibro {
         
         return respuesta;
      }
+     /**
+     * Metodo que contiene JOIN para consultar los libros con sus respectivos AUTORES
+     * Este metodo usa DTOS (DTO =  Data Transfer Object)
+     * @return
+     * @throws SQLException 
+     */
+    public static List<LibrosAutoresDTO> buscarLibrosConAutores() throws SQLException{
+        List<LibrosAutoresDTO> respuesta = null;
+        ConexionBaseDatos conexion = new ConexionBaseDatos();
+        Connection con;
+        PreparedStatement pstCons = null;
+        ResultSet rs = null;
+        
+        try {
+            //Abro conexion a la base de datos
+            con = conexion.obtenerConexion(null);
+            //Declaro la sentencia SQL
+            StringBuilder sb = new StringBuilder();
+            sb.append(" SELECT ");
+            sb.append(" autor.nombre, ");
+            sb.append(" autor.sexo, ");
+            sb.append(" autor.nacionalidad, ");
+            sb.append(" libro.idlibro, ");
+            sb.append(" libro.titulo, ");
+            sb.append(" libro.editorial ");
+            sb.append(" FROM autor JOIN libro ON autor.autor_id = libro.fk_autor_id ");
+            // Preparo la instruccion
+            pstCons = con.prepareStatement(sb.toString());
+            // Ejecuto la instruccion
+            rs = pstCons.executeQuery();
+            // Con el resultado de la consulta, obtengo los datos de la Base
+            respuesta = new ArrayList<>();
+            while (rs.next()){
+                
+                LibrosAutoresDTO libroAutorBDD = new LibrosAutoresDTO();
+                libroAutorBDD.setNombreAutor(rs.getString(1));
+                libroAutorBDD.setSexoAutor(rs.getString(2));
+                libroAutorBDD.setNacionalidadAutor(rs.getString(3));
+                libroAutorBDD.setCodigoLibro(rs.getLong(4));
+                libroAutorBDD.setTituloLibro(rs.getString(5));
+                libroAutorBDD.setEditorialLibro(rs.getString(6));
+                respuesta.add(libroAutorBDD);
+                
+            }
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        } catch (NamingException e){
+            e.printStackTrace();
+        } catch (SQLException e){
+            e.printStackTrace();
+        } catch (Exception e){
+            e.printStackTrace();
+        } finally{
+            conexion.cerrarConexiones(rs, pstCons);
+        }
+        return respuesta;
+    }
  
 }

@@ -19,7 +19,7 @@ public class TestServicioCRUDAutor {
     
     public static void main(String[] args) {
         
-        //buscarAutorPorID(new Long(3));
+        //buscarAutorPorID(new Long(2));
         //***** PRUEBA DE INSERTAR NUEVO AUTOR *****
         //autorInsertar(new Long(3), "Joaquin Gallejos", "22/09/1887","M","Ecuador");
         // ***** PRUEBA DE ACTUALIZAR AUTOR *****
@@ -96,7 +96,7 @@ public class TestServicioCRUDAutor {
                 System.err.println(autorEliminar.toString());
             }
         } catch (Exception e) {
-            System.err.println("ERROR EN EL METODO autorEliminarl " + e);
+            System.err.println("ERROR EN EL METODO autorEliminar" + e);
         }  
     } 
     public static void obtenerSiguienteID(){

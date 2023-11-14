@@ -161,6 +161,11 @@ public class FRMCRUDAutores extends javax.swing.JFrame {
 
         txtCodigo.setText("jTextField1");
         txtCodigo.setEnabled(false);
+        txtCodigo.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                txtCodigoActionPerformed(evt);
+            }
+        });
 
         txtNombre.setText("jTextField1");
 
@@ -171,6 +176,11 @@ public class FRMCRUDAutores extends javax.swing.JFrame {
         jLabel4.setText("Sexo:");
 
         lstSexo.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "<SELECCIONE>", "MASCULINO", "FEMENINO" }));
+        lstSexo.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                lstSexoActionPerformed(evt);
+            }
+        });
 
         jLabel5.setText("Nacionalidad:");
 
@@ -367,6 +377,9 @@ public class FRMCRUDAutores extends javax.swing.JFrame {
         } catch (Exception e) {
             JOptionPane.showMessageDialog(null, "Falla en el guardar registro " + e.getMessage());
         }
+        if(txtCodigo.getText().isEmpty()|| txtNombre.getText().isEmpty()||txtFechaNacimiento.getText().isEmpty()||lstSexo.getSelectedItem()==null||lstNacionalidad.getSelectedItem()==null){
+        JOptionPane.showMessageDialog(this,"No dejar los campos vacios");
+    }
         
     }//GEN-LAST:event_btnGuardarActionPerformed
 
@@ -376,7 +389,9 @@ public class FRMCRUDAutores extends javax.swing.JFrame {
     }//GEN-LAST:event_btnListarActionPerformed
 
     private void btnNuevoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnNuevoActionPerformed
-        // TODO add your handling code here:
+    if(txtCodigo.getText().isEmpty()|| txtNombre.getText().isEmpty()||txtFechaNacimiento.getText().isEmpty()||lstSexo.getSelectedItem()==null||lstNacionalidad.getSelectedItem()==null){
+        JOptionPane.showMessageDialog(this,"No dejar los campos vacios");
+    }
         encerarDatos();
     }//GEN-LAST:event_btnNuevoActionPerformed
 
@@ -413,7 +428,18 @@ public class FRMCRUDAutores extends javax.swing.JFrame {
         } catch (Exception e) {
             JOptionPane.showMessageDialog(null, "Falla en el ELIMINAR registro " + e.getMessage());
         }
+        if(txtCodigo.getText().isEmpty()|| txtNombre.getText().isEmpty()||txtFechaNacimiento.getText().isEmpty()||lstSexo.getSelectedItem()==null||lstNacionalidad.getSelectedItem()==null){
+        JOptionPane.showMessageDialog(this,"No dejar los campos vacios");
+    }
     }//GEN-LAST:event_btnEliminarActionPerformed
+
+    private void lstSexoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_lstSexoActionPerformed
+        
+    }//GEN-LAST:event_lstSexoActionPerformed
+
+    private void txtCodigoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtCodigoActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txtCodigoActionPerformed
 
     /**s
      * @param args the command line arguments

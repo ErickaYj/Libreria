@@ -4,11 +4,14 @@
  */
 package com.test.libreria.baseDatos;
 
+import com.libreria.DTOS.LibrosAutoresDTO;
 import com.libreria.baseDatos.entidades.Autor;
 import com.libreria.baseDatos.entidades.Libro;
 import com.libreria.baseDatos.serviciosCRUD.ServicioCRUDAutor;
 import com.libreria.baseDatos.serviciosCRUD.ServicioCRUDLibro;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 /**
  *
@@ -17,15 +20,16 @@ import java.util.Date;
 public class TestServicioCRUDLibro {
      public static void main(String[] args) {
      //*****PRUEBA DE BUSQUEDA DE LIBRO POR ID*****
-     //obtenerLibroPorID(new Long(2));
+     //obtenerLibroPorID(new Long(3));
      //*****PRUEBA DE INSERTAR NUEVO LIBRO*****
-     //libroInsertar(new Long(3),"Metamorfosis","1915/06/12","Alma",Long (3));
+     //libroInsertar(new Long(3),"Metamorfosis","1915/06/12","Alma",new Long(3));
      //*****PRUEBA DE ACTUALIZAR LIBRO*****
-     //libroActualizar(Long(2), "Cronica de una muerte","1981/05/19", "Random house", Long (1));
+     //libroActualizar(Long(2), "Cronica de una muerte","1981/05/19", "Random house", new Long (2));
      //*****PRUEBA DE BUSQUEDA DE LIBRO POR ID*****
      //libroEliminar(new Long(1));
      //*****PRUEBA DE BUSQUEDA DE LIBRO POR ID*****
      //obtenerLibroPorID();
+     buscarLibrosConAutores();
      
      
      }
@@ -34,8 +38,8 @@ public class TestServicioCRUDLibro {
     Libro libroEncontrado = new Libro();
     try {
             libroEncontrado = servLibro.obtenerLibroPorID(idABuscar);
-            if(libroEncontrado!=null && libroEncontrado.getCodigoAutor()!=null){
-                System.out.println("REGISTRO DE AUTOR ENCONTRADO");
+            if(libroEncontrado!=null && libroEncontrado.getCodigoLibro()!=null){
+                System.out.println("REGISTRO DE UN LIBRO ENCONTRADO");
                 System.out.println(libroEncontrado.toString());
             }else{
                 System.out.println("NO SE ENCONTRO EL LIBRO CON ID: " + idABuscar);
@@ -101,6 +105,21 @@ public class TestServicioCRUDLibro {
             System.out.println("Siguiente ID Tabla Libro es: " + nuevoID);
         } catch (Exception e) {
             System.err.println("ERROR EN EL METODO obtenerSiguienteID " + e);
+        }
+    }
+    public static void buscarLibrosConAutores(){
+        ServicioCRUDAutor servAutor = new ServicioCRUDAutor();
+        List<LibrosAutoresDTO> listaLibroAutor = new ArrayList<>();
+        try {
+            listaLibroAutor = servAutor.buscarLibrosConAutores();
+            if(listaLibroAutor!=null && !listaLibroAutor.isEmpty()){
+                System.out.println("REGISROS ENCONTRADOS CON DTO");
+                System.out.println(listaLibroAutor.toString());
+            }else{
+                System.out.println("NO SE ENCONTRARON LIBROS VS AUTORES");
+            }
+        } catch (Exception e) {
+            System.err.println("ERROR EN EL METODO buscarLibrosConAutores " + e);
         }
     }
     }
