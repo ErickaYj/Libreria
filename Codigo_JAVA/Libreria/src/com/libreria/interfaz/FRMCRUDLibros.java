@@ -82,7 +82,8 @@ public class FRMCRUDLibros extends javax.swing.JFrame {
                 codigo, 
                 txtTitulo.getText(), 
                 dateFormat.parse(txtFechaPublicacion.getText()) ,
-                        txtEditorial.getText().toString(),codigo);
+                txtEditorial.getText().toString(),
+                new Long(txtcodigoAutor.getText()));
                 
             }
             
@@ -104,7 +105,6 @@ public class FRMCRUDLibros extends javax.swing.JFrame {
                     lib.getTitulo(),
                     lib.getFechaPublicacion(),
                     lib.getEditorial(),
-                    lib.getCodigoLibro(),
                     lib.getCodigoAutor()
                 });
             }
@@ -165,6 +165,7 @@ public class FRMCRUDLibros extends javax.swing.JFrame {
         jLabel4.setText("Editorial:");
 
         txtcodigo.setBackground(new java.awt.Color(242, 242, 242));
+        txtcodigo.setEnabled(false);
         txtcodigo.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 txtcodigoActionPerformed(evt);

@@ -122,13 +122,12 @@ public class ServicioCRUDLibro {
             con = conexion.obtenerConexion(null);
             //Declaro la sentencia SQL
             StringBuilder sb = new StringBuilder();
-            sb.append("INSERT INTO libro (idlibro, titulo , fecha_publicacion, editorial) ");
+            sb.append("INSERT INTO libro (titulo , fecha_publicacion, editorial,fk_autor_id) "); //AQUI FALTABA fk_autor_id
             sb.append(" VALUES ( ");
-            sb.append("'"+ libroInsertar.getCodigoLibro()+ ", ");
             sb.append("'" + libroInsertar.getTitulo()+ "', ");
             sb.append("'" + new Date(libroInsertar.getFechaPublicacion().getTime())+"', ");
-            sb.append("'" + libroInsertar.getEditorial()+ "' ");
-            sb.append("'"+libroInsertar.getCodigoAutor());
+            sb.append("'" + libroInsertar.getEditorial()+ "', "); //AQUI FALTABA LA COMA
+            sb.append("'"+libroInsertar.getCodigoAutor() + "' "); //AQUI FALTABA LA COMILLA PARA CERRAR EL TEXTO
             
             sb.append(" ) ");
             // Preparo la instruccion
@@ -173,10 +172,11 @@ public class ServicioCRUDLibro {
             //Declaro la sentencia SQL
             StringBuilder sb = new StringBuilder();
             sb.append("UPDATE libro SET  ");
-            sb.append(" titulo = ' " + libroActualizar.getTitulo()+ "', " );
-            sb.append(" fecha_publicacion = ' " + libroActualizar.getFechaPublicacion()+ "' " );
-            sb.append(" editorial  = " + libroActualizar.getEditorial()+"', " );
-            sb.append("codigo_autor='"+libroActualizar.getCodigoAutor()+", ");
+            sb.append(" titulo = '" + libroActualizar.getTitulo()+ "', " );
+            sb.append(" fecha_publicacion = '" + new Date(libroActualizar.getFechaPublicacion().getTime())+ "', " );
+            sb.append(" editorial  = '" + libroActualizar.getEditorial()+"', " );
+            sb.append("fk_autor_id='"+libroActualizar.getCodigoAutor()+"' ");
+            sb.append(" WHERE idlibro = " + libroActualizar.getCodigoLibro());
             
             // Preparo la instruccion
             pstCons = con.prepareStatement(sb.toString());
