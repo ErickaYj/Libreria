@@ -20,3 +20,4 @@ FROM autor JOIN libro ON autor.autor_id = libro.fk_autor_id;
 /*WHERE autor.sexo = 'M'
 AND autor.nacionalidad = 'ESPAÑOL' ;*/
 
+/*PRUEBAS*/
